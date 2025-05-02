@@ -9,6 +9,9 @@ class Task:
         self.repeat_days = repeat_days
         self.subtasks = subtasks if subtasks else []
 
+    def __str__(self):
+        return f"{self.name} - Due: {str(self.due_date)}"
+
 class TaskManager(QWidget):
     def __init__(self):
         super().__init__()
