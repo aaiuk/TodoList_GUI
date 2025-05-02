@@ -1,5 +1,5 @@
 import sys
-from PyQt6.QtWidgets import(QApplication, QWidget, QVBoxLayout, QListWidget, QListWidgetItem)
+from PyQt6.QtWidgets import(QApplication, QWidget, QVBoxLayout, QListWidget, QListWidgetItem, QComboBox)
 
 class Task:
     def __init__(self, name, category, due_date, repeat_days, subtasks=None):
@@ -16,20 +16,36 @@ class TaskManager(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Task Manager")
-        a = Task(name="test", category="urara", due_date="2024/04/16", repeat_days="Monday", subtasks=None)
-
+        
+        a = Task(name="test", category="Work", due_date="2024/04/16", repeat_days="Monday", subtasks=None)
         self.tasks = [a]
+        self.categories = ["Work", "Personal", "Hobby"]
+        
 
         self.layout = QVBoxLayout()
+        self.category_filter = QComboBox()
+        self.category_filter.addItems(["All"] + self.categories)
+        self.category_filter.currentIndexChanged.connect(self.refresh_task_list)
+       
         self.task_list = QListWidget()
-        self.task_list.clear()
         for task in self.tasks:
             item = QListWidgetItem(str(task))
             self.task_list.addItem(item)
+        
+        self.layout.addWidget(self.category_filter)
         self.layout.addWidget(self.task_list)
 
         self.setLayout(self.layout)
-    
+
+    def refresh_task_list(self):
+        self.task_list.clear()
+        selected_category = self.category_filter.currentText()
+        for task in self.tasks:
+            if selected_category == "All" or task.category == selected_category:
+                item = QListWidgetItem(str(task))
+                self.task_list.addItem(item)
+
+        
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
